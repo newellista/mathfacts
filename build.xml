@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="mathfacts" basedir="." default="build">
+	<property file="build.properties" />
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${classes.dir}" />
+	</target>
+
+	<target name="compile" >
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir ="${src.dir}"
+			destdir="${classes.dir}"
+			compiler="javac1.5" >
+		</javac>
+	</target>
+	
+	<target name="build" depends="compile">
+		<mkdir dir="${build.dir}"/>
+		<tstamp>
+			<format property="TODAY" pattern="yyyy-MM-dd hh:mm:ss" />
+		</tstamp>
+		<jar destfile="${build.dir}/${ant.project.name}-${major.revision}.${revision}.jar" basedir="${classes.dir}" >
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Implementation-Title" value="${manifest.title}"/>
+				<attribute name="Implementation-Version" value="${major.revision}.${revision} ${TODAY}"/> 
+				<attribute name="Implementation-Vendor" value="${manifest.vendor}" />
+				<attribute name="Main-Class" value="${manifest.main-class}" />
+			</manifest>
+		</jar>
+		<copy file="${build.dir}/${ant.project.name}-${major.revision}.${revision}.jar" tofile="${lib.dir}/${ant.project.name}.jar" />
+		<copy file="${build.dir}/${ant.project.name}-${major.revision}.${revision}.jar" todir="${common.build}" />
+	</target>
+
+	<target name="install" depends="build" >
+		<copy file="${build.dir}/${ant.project.name}-${major.revision}.${revision}.jar" tofile="${common.build}/${ant.project.name}.jar" />
+	</target>
+	
+	<target name="clean-build" depends="clean,build" />
+</project>
